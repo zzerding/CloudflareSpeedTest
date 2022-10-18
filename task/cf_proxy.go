@@ -22,7 +22,7 @@ func request(method string, url string, body io.Reader) (*http.Response, error) 
 	if err != nil {
 		panic("create request error")
 	}
-	req.Header.Add("Host", "https://rn.ssrtls.xyz")
+	req.Header.Add("Host", "cloudflare.cdn.openbsd.org")
 	req.Header.Add("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
 	resp, err := clint.Do(req)
 	return resp, err
