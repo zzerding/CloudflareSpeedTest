@@ -52,6 +52,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
+    -dp
+        禁用检测是否为cf代理；禁用后无论是否为cf代理ip都会检测
     -ipv6
         IPv6测速模式；确保 IP 段数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
     -allip
@@ -73,6 +75,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "下载测速地址")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
+	flag.BoolVar(&task.DisableProxy, "dp", false, "禁用下载测速")
 	flag.BoolVar(&task.IPv6, "ipv6", false, "启用IPv6")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP 数据文件")
@@ -116,6 +119,8 @@ func main() {
 
 	// 开始延迟测速
 	pingData := task.NewPing().Run().FilterDelay()
+	//todo 测试是否为代理ip 防止cf 封号
+	pingData = task.ProxyTestMain(pingData)
 	// 开始下载测速
 	speedData := task.TestDownloadSpeed(pingData)
 	utils.ExportCsv(speedData)
